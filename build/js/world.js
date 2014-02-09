@@ -8,12 +8,19 @@ FW.World = World = (function() {
     FW.clock = new THREE.Clock();
     this.SCREEN_WIDTH = window.innerWidth;
     this.SCREEN_HEIGHT = window.innerHeight;
-    this.camFar = 200;
+    this.camFar = 2000;
     FW.audio.masterGain.value = 1;
     FW.camera = new THREE.PerspectiveCamera(45.0, this.SCREEN_WIDTH / this.SCREEN_HEIGHT, 1, this.camFar);
-    FW.camera.position.z = -100;
-    this.controls = new THREE.OrbitControls(FW.camera);
+    this.controls = new THREE.PathControls(FW.camera);
+    this.controls.waypoints = [[0, 0, 0], [0, 0, -50]];
+    this.controls.duration = 28;
+    this.controls.useConstantSpeed = true;
+    this.controls.createDebugPath = true;
+    this.controls.createDebugDummy = true;
+    this.controls.lookSpeed = .2;
+    this.controls.init();
     FW.scene = new THREE.Scene();
+    FW.scene.add(this.controls.animationParent);
     this.initSceneObjects();
     FW.Renderer = new THREE.WebGLRenderer();
     FW.Renderer.setSize(this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
@@ -21,6 +28,7 @@ FW.World = World = (function() {
     window.addEventListener("resize", (function() {
       return _this.onWindowResize();
     }), false);
+    this.controls.animation.play(true, 0);
   }
 
   World.prototype.initSceneObjects = function() {
@@ -48,7 +56,7 @@ FW.World = World = (function() {
     _results = [];
     for (i = _i = 0; _i <= 5; i = ++_i) {
       mesh = new THREE.Mesh(this.pulseGeo, material);
-      mesh.position.z = -16;
+      mesh.position.z = -50;
       mesh.rotation.z = (i / 20) * Math.PI * 2;
       _results.push(FW.scene.add(mesh));
     }
@@ -84,12 +92,15 @@ FW.World = World = (function() {
   World.prototype.animate = function() {
     this.updateAudio();
     this.updatePulseGeo();
-    this.controls.update();
     this.render();
     return requestAnimationFrame(this.animate);
   };
 
   World.prototype.render = function() {
+    var delta;
+    delta = FW.clock.getDelta();
+    THREE.AnimationHandler.update(delta);
+    this.controls.update(delta);
     return FW.Renderer.render(FW.scene, FW.camera);
   };
 

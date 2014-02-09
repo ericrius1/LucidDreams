@@ -4,19 +4,26 @@ FW.World = class World
     FW.clock = new THREE.Clock()
     @SCREEN_WIDTH = window.innerWidth
     @SCREEN_HEIGHT = window.innerHeight
-    @camFar = 200
+    @camFar = 2000
     FW.audio.masterGain.value = 1
 
     # CAMERA
     FW.camera = new THREE.PerspectiveCamera(45.0, @SCREEN_WIDTH / @SCREEN_HEIGHT, 1, @camFar)
-    FW.camera.position.z = -100
     
     #CONTROLS
-    @controls = new THREE.OrbitControls(FW.camera)
+    @controls = new THREE.PathControls(FW.camera)
+    @controls.waypoints = [ [ 0, 0, 0], [ 0, 0, -50 ] ];
+    @controls.duration = 28
+    @controls.useConstantSpeed = true;
+    @controls.createDebugPath = true;
+    @controls.createDebugDummy = true;
+    @controls.lookSpeed = .2;
+
+    @controls.init()
 
     # SCENE 
     FW.scene = new THREE.Scene()
-
+    FW.scene.add @controls.animationParent
     @initSceneObjects()
 
 
@@ -30,6 +37,9 @@ FW.World = class World
     window.addEventListener "resize", (=>
       @onWindowResize()
     ), false
+
+    #start animation
+    @controls.animation.play(true, 0)
 
   initSceneObjects: ->
     light = new THREE.DirectionalLight( 0xaa00aa , 1 )
@@ -63,7 +73,7 @@ FW.World = class World
 
     for i in [0..5]
       mesh = new THREE.Mesh( @pulseGeo , material )
-      mesh.position.z = -16
+      mesh.position.z = -50
       mesh.rotation.z = (i / 20) * Math.PI * 2
       FW.scene.add( mesh )
 
@@ -89,9 +99,11 @@ FW.World = class World
   animate : =>
     @updateAudio()
     @updatePulseGeo()
-    @controls.update()
     @render()
     requestAnimationFrame @animate
   render : ->
+    delta = FW.clock.getDelta()
+    THREE.AnimationHandler.update(delta)
+    @controls.update(delta)
     FW.Renderer.render( FW.scene, FW.camera );
 
