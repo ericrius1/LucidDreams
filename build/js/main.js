@@ -14,17 +14,14 @@ if (typeof SC !== "undefined" && SC !== null) {
   });
 }
 
-FW.sfxVolume = 0.2;
-
 FW.globalTick = 0.16;
 
-FW.development = true;
-
-window.soundOn = !FW.development;
+window.soundOn = false;
 
 window.onload = function() {
   var infoEl, infoShowing;
   this.audio = new FW.Audio();
+  FW.director = new FW.Director();
   infoEl = document.getElementsByClassName('infoWrapper')[0];
   infoShowing = false;
   return document.onclick = function(event) {

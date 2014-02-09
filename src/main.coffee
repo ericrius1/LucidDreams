@@ -11,13 +11,12 @@ SC?.initialize({
     client_id: "7da24ca214bf72b66ed2494117d05480",
 });
 
-FW.sfxVolume = 0.2
 FW.globalTick = 0.16
-FW.development = true
-window.soundOn = !FW.development
+window.soundOn = false
 
 window.onload = ->
   @audio = new FW.Audio()
+  FW.director = new FW.Director()
   infoEl = document.getElementsByClassName('infoWrapper')[0]
   infoShowing = false
   document.onclick = (event)-> 
@@ -25,6 +24,7 @@ window.onload = ->
     if (el.className is "icon") 
       infoEl.style.display = if infoShowing then 'none' else 'block'
       infoShowing = !infoShowing;
+
 
 
 

@@ -43,7 +43,10 @@ FW.Audio = Audio = (function() {
   };
 
   Audio.prototype.play = function() {
-    return this.source.noteOn(0);
+    if (soundOn) {
+      this.source.noteOn(0);
+    }
+    return FW.director.startShow();
   };
 
   return Audio;
