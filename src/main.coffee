@@ -15,7 +15,7 @@ FW.globalTick = 0.16
 window.soundOn = false
 
 window.onload = ->
-  @audio = new FW.Audio()
+  FW.audio = new FW.Audio()
   FW.director = new FW.Director()
   infoEl = document.getElementsByClassName('infoWrapper')[0]
   infoShowing = false

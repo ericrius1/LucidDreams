@@ -4,3 +4,4 @@ FW.Director = class Director
 
   startShow: ->
     FW.world = new FW.World()
+    FW.world.animate()

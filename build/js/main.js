@@ -20,7 +20,7 @@ window.soundOn = false;
 
 window.onload = function() {
   var infoEl, infoShowing;
-  this.audio = new FW.Audio();
+  FW.audio = new FW.Audio();
   FW.director = new FW.Director();
   infoEl = document.getElementsByClassName('infoWrapper')[0];
   infoShowing = false;

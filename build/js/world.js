@@ -4,26 +4,74 @@ var World,
 FW.World = World = (function() {
   function World() {
     this.animate = __bind(this.animate, this);
-    var light,
-      _this = this;
+    var _this = this;
     FW.clock = new THREE.Clock();
     this.SCREEN_WIDTH = window.innerWidth;
     this.SCREEN_HEIGHT = window.innerHeight;
-    this.camFar = 2000000;
-    FW.width = 1000000;
+    this.camFar = 200;
+    FW.audio.masterGain.value = 1;
     FW.camera = new THREE.PerspectiveCamera(45.0, this.SCREEN_WIDTH / this.SCREEN_HEIGHT, 1, this.camFar);
-    FW.camera.position.set(0, 600, 1000);
+    FW.camera.position.z = -100;
     this.controls = new THREE.OrbitControls(FW.camera);
     FW.scene = new THREE.Scene();
+    this.initSceneObjects();
     FW.Renderer = new THREE.WebGLRenderer();
     FW.Renderer.setSize(this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
     document.body.appendChild(FW.Renderer.domElement);
-    light = new THREE.DirectionalLight(0xff00ff, 2);
-    FW.scene.add(light);
     window.addEventListener("resize", (function() {
       return _this.onWindowResize();
     }), false);
   }
+
+  World.prototype.initSceneObjects = function() {
+    var i, light, material, mesh, _i, _results;
+    light = new THREE.DirectionalLight(0xaa00aa, 1);
+    light.position.set(0, 1, 0);
+    FW.scene.add(light);
+    light = new THREE.DirectionalLight(0x44aaaa, 1);
+    light.position.set(0, -1, 0);
+    FW.scene.add(light);
+    material = new THREE.MeshPhongMaterial({
+      color: 0xc0ffee,
+      emissive: 0x004477,
+      specular: 0x440077,
+      diffuse: 0x440077,
+      shininess: 100000,
+      ambient: 0x110000,
+      shading: THREE.FlatShading,
+      side: THREE.DoubleSide,
+      opacity: 1,
+      transparent: true
+    });
+    this.pulseGeo = new THREE.IcosahedronGeometry(10, 2);
+    this.pulseData = this.pulseGeo.clone();
+    _results = [];
+    for (i = _i = 0; _i <= 5; i = ++_i) {
+      mesh = new THREE.Mesh(this.pulseGeo, material);
+      mesh.position.z = -16;
+      mesh.rotation.z = (i / 20) * Math.PI * 2;
+      _results.push(FW.scene.add(mesh));
+    }
+    return _results;
+  };
+
+  World.prototype.updateAudio = function() {
+    this.freqByteData = new Uint8Array(FW.audio.masterAnalyser.frequencyBinCount);
+    return FW.audio.masterAnalyser.getByteFrequencyData(this.freqByteData);
+  };
+
+  World.prototype.updatePulseGeo = function() {
+    var fbd, i, _i, _ref;
+    for (i = _i = 0, _ref = this.pulseGeo.vertices.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      if (this.freqByteData[i]) {
+        fbd = this.freqByteData[i];
+        this.pulseGeo.vertices[i].x = this.pulseData.vertices[i].x * (.5 + fbd / 100);
+        this.pulseGeo.vertices[i].y = this.pulseData.vertices[i].y * (.5 + fbd / 100);
+        this.pulseGeo.vertices[i].z = this.pulseData.vertices[i].z * (.5 + fbd / 100);
+      }
+    }
+    return this.pulseGeo.verticesNeedUpdate = true;
+  };
 
   World.prototype.onWindowResize = function(event) {
     this.SCREEN_WIDTH = window.innerWidth;
@@ -34,12 +82,11 @@ FW.World = World = (function() {
   };
 
   World.prototype.animate = function() {
-    var delta, time;
-    requestAnimationFrame(this.animate);
-    delta = FW.clock.getDelta();
-    time = Date.now();
+    this.updateAudio();
+    this.updatePulseGeo();
     this.controls.update();
-    return this.render();
+    this.render();
+    return requestAnimationFrame(this.animate);
   };
 
   World.prototype.render = function() {

@@ -6,7 +6,8 @@ FW.Director = Director = (function() {
   }
 
   Director.prototype.startShow = function() {
-    return FW.world = new FW.World();
+    FW.world = new FW.World();
+    return FW.world.animate();
   };
 
   return Director;
