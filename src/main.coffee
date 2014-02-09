@@ -17,7 +17,7 @@ FW.development = true
 window.soundOn = !FW.development
 
 window.onload = ->
-  initAudio()
+  @audio = new FW.Audio()
   infoEl = document.getElementsByClassName('infoWrapper')[0]
   infoShowing = false
   document.onclick = (event)-> 

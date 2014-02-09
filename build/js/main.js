@@ -24,7 +24,7 @@ window.soundOn = !FW.development;
 
 window.onload = function() {
   var infoEl, infoShowing;
-  initAudio();
+  this.audio = new FW.Audio();
   infoEl = document.getElementsByClassName('infoWrapper')[0];
   infoShowing = false;
   return document.onclick = function(event) {
