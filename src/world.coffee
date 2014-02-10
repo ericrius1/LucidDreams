@@ -12,12 +12,14 @@ FW.World = class World
     
     #CONTROLS
     @controls = new THREE.PathControls(FW.camera)
-    @controls.waypoints = [ [ 0, 0, 0], [ 0, 0, -50 ] ];
-    @controls.duration = 28
-    @controls.useConstantSpeed = true;
-    @controls.createDebugPath = true;
-    @controls.createDebugDummy = true;
-    @controls.lookSpeed = .1;
+    @controls.waypoints = [ [ 0, 0, 0], [ 0, 0, -20] ];
+    @controls.duration = 20
+    @controls.useConstantSpeed = true
+    @controls.createDebugPath = true
+    @controls.createDebugDummy = true
+    @controls.lookSpeed = .01
+    @controls.lookVertical = true
+    @controls.lookHorizontal = true
 
     @controls.init()
 
@@ -73,7 +75,7 @@ FW.World = class World
 
     for i in [0..5]
       mesh = new THREE.Mesh( @pulseGeo , material )
-      mesh.position.set(-40, 0, -50)
+      mesh.position.set(0, 0, -50)
       mesh.rotation.z = (i / 20) * Math.PI * 2
       FW.scene.add( mesh )
 

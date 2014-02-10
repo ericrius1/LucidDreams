@@ -12,12 +12,14 @@ FW.World = World = (function() {
     FW.audio.masterGain.value = 1;
     FW.camera = new THREE.PerspectiveCamera(45.0, this.SCREEN_WIDTH / this.SCREEN_HEIGHT, 1, this.camFar);
     this.controls = new THREE.PathControls(FW.camera);
-    this.controls.waypoints = [[0, 0, 0], [0, 0, -50]];
-    this.controls.duration = 28;
+    this.controls.waypoints = [[0, 0, 0], [0, 0, -20]];
+    this.controls.duration = 20;
     this.controls.useConstantSpeed = true;
     this.controls.createDebugPath = true;
     this.controls.createDebugDummy = true;
-    this.controls.lookSpeed = .1;
+    this.controls.lookSpeed = .01;
+    this.controls.lookVertical = true;
+    this.controls.lookHorizontal = true;
     this.controls.init();
     FW.scene = new THREE.Scene();
     FW.scene.add(this.controls.animationParent);
@@ -56,7 +58,7 @@ FW.World = World = (function() {
     _results = [];
     for (i = _i = 0; _i <= 5; i = ++_i) {
       mesh = new THREE.Mesh(this.pulseGeo, material);
-      mesh.position.set(-40, 0, -50);
+      mesh.position.set(0, 0, -50);
       mesh.rotation.z = (i / 20) * Math.PI * 2;
       _results.push(FW.scene.add(mesh));
     }
