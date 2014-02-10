@@ -17,7 +17,7 @@ FW.World = class World
     @controls.useConstantSpeed = true;
     @controls.createDebugPath = true;
     @controls.createDebugDummy = true;
-    @controls.lookSpeed = .2;
+    @controls.lookSpeed = .1;
 
     @controls.init()
 
@@ -67,13 +67,13 @@ FW.World = class World
 
     #We create a geometry, and then we copy, 
     #So that we have an unaltered version to compare
-    @pulseGeo  = new THREE.IcosahedronGeometry(10 , 2 );
+    @pulseGeo  = new THREE.IcosahedronGeometry(1 , 2 );
     @pulseData = @pulseGeo.clone();
 
 
     for i in [0..5]
       mesh = new THREE.Mesh( @pulseGeo , material )
-      mesh.position.z = -50
+      mesh.position.set(-40, 0, -50)
       mesh.rotation.z = (i / 20) * Math.PI * 2
       FW.scene.add( mesh )
 

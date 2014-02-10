@@ -17,7 +17,7 @@ FW.World = World = (function() {
     this.controls.useConstantSpeed = true;
     this.controls.createDebugPath = true;
     this.controls.createDebugDummy = true;
-    this.controls.lookSpeed = .2;
+    this.controls.lookSpeed = .1;
     this.controls.init();
     FW.scene = new THREE.Scene();
     FW.scene.add(this.controls.animationParent);
@@ -51,12 +51,12 @@ FW.World = World = (function() {
       opacity: 1,
       transparent: true
     });
-    this.pulseGeo = new THREE.IcosahedronGeometry(10, 2);
+    this.pulseGeo = new THREE.IcosahedronGeometry(1, 2);
     this.pulseData = this.pulseGeo.clone();
     _results = [];
     for (i = _i = 0; _i <= 5; i = ++_i) {
       mesh = new THREE.Mesh(this.pulseGeo, material);
-      mesh.position.z = -50;
+      mesh.position.set(-40, 0, -50);
       mesh.rotation.z = (i / 20) * Math.PI * 2;
       _results.push(FW.scene.add(mesh));
     }
