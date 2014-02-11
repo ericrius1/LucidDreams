@@ -2,38 +2,29 @@ var Haze;
 
 FW.Haze = Haze = (function() {
   function Haze() {
-    var texture;
-    this.numEmitters = 1024;
-    this.hazeEmitters = [];
-    this.curXPos = -500;
-    texture = THREE.ImageUtils.loadTexture('assets/smokeparticle.png');
-    texture.minFilter = THREE.LinearMipMapLinearFilter;
-    this.hazeGroup = new ShaderParticleGroup({
-      texture: texture,
+    this.hazeGroup = new SPE.Group({
+      texture: THREE.ImageUtils.loadTexture('assets/bullet.png'),
       maxAge: 1
     });
-    this.initializeHaze();
-    FW.scene.add(this.hazeGroup.mesh);
+    this.createGrid();
   }
 
-  Haze.prototype.initializeHaze = function() {
-    var colorStart, hazeEmitter, i, _i, _ref, _results;
+  Haze.prototype.createGrid = function() {
+    var emitter, x, y, _i, _results;
     _results = [];
-    for (i = _i = 0, _ref = this.numEmitters; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      colorStart = new THREE.Color();
-      colorStart.setRGB(Math.random(), Math.random(), Math.random());
-      hazeEmitter = new ShaderParticleEmitter({
-        position: new THREE.Vector3(this.curXPos, 0, -50),
-        colorStart: colorStart,
-        colorEnd: colorStart,
-        particlesPerSecond: 1,
-        opacityStart: 1,
-        opacityEnd: 1
-      });
-      this.hazeGroup.addEmitter(hazeEmitter);
-      hazeEmitter.disable();
-      this.hazeEmitters.push(hazeEmitter);
-      _results.push(this.curXPos += 1);
+    for (x = _i = 0; _i <= 1; x = ++_i) {
+      _results.push((function() {
+        var _j, _results1;
+        _results1 = [];
+        for (y = _j = 0; _j <= 1; y = ++_j) {
+          emitter = new SPE.Emitter({
+            position: new THREE.Vector3(x, y, -50)
+          });
+          this.hazeGroup.addEmitter(emitter);
+          _results1.push(FW.scene.add(this.hazeGroup.mesh));
+        }
+        return _results1;
+      }).call(this));
     }
     return _results;
   };

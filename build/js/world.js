@@ -12,12 +12,12 @@ FW.World = World = (function() {
     FW.audio.masterGain.value = 1;
     FW.camera = new THREE.PerspectiveCamera(45.0, this.SCREEN_WIDTH / this.SCREEN_HEIGHT, 1, this.camFar);
     this.controls = new THREE.PathControls(FW.camera);
-    this.controls.waypoints = [[0, 0, 0], [0, 0, -100]];
+    this.controls.waypoints = [[0, 0, 0]];
     this.controls.duration = 1000;
     this.controls.useConstantSpeed = true;
     this.controls.createDebugPath = true;
     this.controls.createDebugDummy = true;
-    this.controls.lookSpeed = .01;
+    this.controls.lookSpeed = .00001;
     this.controls.lookVertical = true;
     this.controls.lookHorizontal = true;
     this.controls.init();
@@ -55,11 +55,10 @@ FW.World = World = (function() {
     });
     this.pulseGeo = new THREE.IcosahedronGeometry(1, 2);
     this.pulseData = this.pulseGeo.clone();
-    for (i = _i = 0; _i <= 50; i = ++_i) {
+    for (i = _i = 0; _i <= 1; i = ++_i) {
       mesh = new THREE.Mesh(this.pulseGeo, material);
       mesh.position.set(rnd(-10, 10), rnd(-10, 10), -50);
       mesh.rotation.z = (i / 20) * Math.PI * 2;
-      FW.scene.add(mesh);
     }
     return this.haze = new FW.Haze();
   };
@@ -82,20 +81,6 @@ FW.World = World = (function() {
     return this.pulseGeo.verticesNeedUpdate = true;
   };
 
-  World.prototype.updateHaze = function() {
-    var fbd, i, _i, _ref, _results;
-    _results = [];
-    for (i = _i = 0, _ref = this.freqByteData.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      fbd = this.freqByteData[i];
-      if (fbd > 150) {
-        _results.push(this.haze.hazeEmitters[i].enable());
-      } else {
-        _results.push(this.haze.hazeEmitters[i].disable());
-      }
-    }
-    return _results;
-  };
-
   World.prototype.onWindowResize = function(event) {
     this.SCREEN_WIDTH = window.innerWidth;
     this.SCREEN_HEIGHT = window.innerHeight;
@@ -108,7 +93,6 @@ FW.World = World = (function() {
     this.updateAudio();
     this.updatePulseGeo();
     this.haze.update();
-    this.updateHaze();
     this.render();
     return requestAnimationFrame(this.animate);
   };

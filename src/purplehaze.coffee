@@ -1,37 +1,17 @@
 FW.Haze = class Haze
   constructor: ->
-    @numEmitters = 1024
-    @hazeEmitters = []
-    @curXPos = -500
-
-
-    texture = THREE.ImageUtils.loadTexture('assets/smokeparticle.png')
-    texture.minFilter = THREE.LinearMipMapLinearFilter;
-
-    @hazeGroup = new ShaderParticleGroup
-      texture: texture
+    @hazeGroup = new SPE.Group
+      texture: THREE.ImageUtils.loadTexture('assets/bullet.png')
       maxAge: 1
-      # blending: THREE.NormalBlending
+    @createGrid()
 
-    @initializeHaze()
-    FW.scene.add(@hazeGroup.mesh)
-  initializeHaze: ->
-    for i in [0...@numEmitters]
-      colorStart = new THREE.Color()
-      colorStart.setRGB Math.random(), Math.random(), Math.random()
-      hazeEmitter = new ShaderParticleEmitter
-        position: new THREE.Vector3(@curXPos, 0 , -50)
-        colorStart: colorStart
-        colorEnd: colorStart
-        particlesPerSecond: 1
-        opacityStart: 1
-        opacityEnd: 1
-
-      @hazeGroup.addEmitter hazeEmitter
-      hazeEmitter.disable()
-      @hazeEmitters.push hazeEmitter
-      @curXPos+=1
-
+  createGrid: ->
+    for x in [0..1]
+      for y in [0..1]
+        emitter = new SPE.Emitter
+          position: new THREE.Vector3 x, y, -50
+        @hazeGroup.addEmitter emitter
+        FW.scene.add @hazeGroup.mesh
 
   update: ->
     @hazeGroup.tick()
