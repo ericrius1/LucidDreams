@@ -83,12 +83,12 @@ FW.World = class World
     @haze = new FW.Haze()
 
   updateAudio: ->
-    @freqByteData = new Uint8Array(FW.audio.masterAnalyser.frequencyBinCount)
-    FW.audio.masterAnalyser.getByteFrequencyData(@freqByteData)
+    FW.freqByteData = new Uint8Array(FW.audio.masterAnalyser.frequencyBinCount)
+    FW.audio.masterAnalyser.getByteFrequencyData(FW.freqByteData)
   
   updatePulseGeo: ->
     for i in [0...@pulseGeo.vertices.length]
-      if @freqByteData[i]
+      if FW.freqByteData[i]
         fbd = @freqByteData[i]
         @pulseGeo.vertices[i].x = @pulseData.vertices[i].x * ( .5 + fbd/100 )
         @pulseGeo.vertices[i].y = @pulseData.vertices[i].y * ( .5 + fbd/100 )
@@ -104,13 +104,13 @@ FW.World = class World
 
   animate : =>
     @updateAudio()
-    @updatePulseGeo()
+    # @updatePulseGeo()
     @haze.update()
     @render()
     requestAnimationFrame @animate
   render : ->
     delta = FW.clock.getDelta()
-    THREE.AnimationHandler.update(delta)
+    # THREE.AnimationHandler.update(delta)
     @controls.update(delta)
     FW.Renderer.render( FW.scene, FW.camera );
 

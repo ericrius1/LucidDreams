@@ -64,14 +64,14 @@ FW.World = World = (function() {
   };
 
   World.prototype.updateAudio = function() {
-    this.freqByteData = new Uint8Array(FW.audio.masterAnalyser.frequencyBinCount);
-    return FW.audio.masterAnalyser.getByteFrequencyData(this.freqByteData);
+    FW.freqByteData = new Uint8Array(FW.audio.masterAnalyser.frequencyBinCount);
+    return FW.audio.masterAnalyser.getByteFrequencyData(FW.freqByteData);
   };
 
   World.prototype.updatePulseGeo = function() {
     var fbd, i, _i, _ref;
     for (i = _i = 0, _ref = this.pulseGeo.vertices.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      if (this.freqByteData[i]) {
+      if (FW.freqByteData[i]) {
         fbd = this.freqByteData[i];
         this.pulseGeo.vertices[i].x = this.pulseData.vertices[i].x * (.5 + fbd / 100);
         this.pulseGeo.vertices[i].y = this.pulseData.vertices[i].y * (.5 + fbd / 100);
@@ -91,7 +91,6 @@ FW.World = World = (function() {
 
   World.prototype.animate = function() {
     this.updateAudio();
-    this.updatePulseGeo();
     this.haze.update();
     this.render();
     return requestAnimationFrame(this.animate);
@@ -100,7 +99,6 @@ FW.World = World = (function() {
   World.prototype.render = function() {
     var delta;
     delta = FW.clock.getDelta();
-    THREE.AnimationHandler.update(delta);
     this.controls.update(delta);
     return FW.Renderer.render(FW.scene, FW.camera);
   };
