@@ -12,8 +12,8 @@ FW.World = class World
     
     #CONTROLS
     @controls = new THREE.PathControls(FW.camera)
-    @controls.waypoints = [ [ 0, 0, 0], [ 0, 0, -20] ];
-    @controls.duration = 20
+    @controls.waypoints = [ [ 0, 0, 0], [ 0, 0, -100] ];
+    @controls.duration = 1000
     @controls.useConstantSpeed = true
     @controls.createDebugPath = true
     @controls.createDebugDummy = true
@@ -73,17 +73,20 @@ FW.World = class World
     @pulseData = @pulseGeo.clone();
 
 
-    for i in [0..5]
+    for i in [0..50]
       mesh = new THREE.Mesh( @pulseGeo , material )
-      mesh.position.set(0, 0, -50)
+      mesh.position.set(rnd(-10, 10), rnd(-10, 10), -50)
       mesh.rotation.z = (i / 20) * Math.PI * 2
       FW.scene.add( mesh )
+
+    #HAZE
+    @haze = new FW.Haze()
 
   updateAudio: ->
     @freqByteData = new Uint8Array(FW.audio.masterAnalyser.frequencyBinCount)
     FW.audio.masterAnalyser.getByteFrequencyData(@freqByteData)
   
-  updatePulseGeo :->
+  updatePulseGeo: ->
     for i in [0...@pulseGeo.vertices.length]
       if @freqByteData[i]
         fbd = @freqByteData[i]
@@ -91,6 +94,14 @@ FW.World = class World
         @pulseGeo.vertices[i].y = @pulseData.vertices[i].y * ( .5 + fbd/100 )
         @pulseGeo.vertices[i].z = @pulseData.vertices[i].z * ( .5 + fbd/100 )
     @pulseGeo.verticesNeedUpdate = true
+
+  updateHaze: ->
+    for i in [0...@freqByteData.length]
+      fbd = @freqByteData[i]
+      if fbd > 150
+        @haze.hazeEmitters[i].enable()
+      else
+        @haze.hazeEmitters[i].disable()
   onWindowResize : (event) ->
     @SCREEN_WIDTH = window.innerWidth
     @SCREEN_HEIGHT = window.innerHeight
@@ -101,6 +112,8 @@ FW.World = class World
   animate : =>
     @updateAudio()
     @updatePulseGeo()
+    @haze.update()
+    @updateHaze()
     @render()
     requestAnimationFrame @animate
   render : ->
