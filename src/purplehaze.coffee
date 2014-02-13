@@ -1,29 +1,34 @@
 FW.Haze = class Haze
   constructor: ->
-    @hazeGroup = new SPE.Group
-      texture: THREE.ImageUtils.loadTexture('assets/bullet.png')
+    @voiceGroup = new SPE.Group
+      texture: THREE.ImageUtils.loadTexture('assets/smokeparticle.png')
       maxAge: 1
     @emitters = []
-    @createGrid()
+    @createVoiceCloud()
 
-  createGrid: ->
-    for x in [-16..16]
-      for y in [-16..16]
+  createVoiceCloud: ->
+    for x in [0...1024]
+        color = new THREE.Color()
+        color.setRGB rnd(0.8, 1), rnd(0, 0.2), rnd(0.8, 1.0)
         emitter = new SPE.Emitter
-          position: new THREE.Vector3 x, y, -50
-        @hazeGroup.addEmitter emitter
+          position: new THREE.Vector3 rnd(-10, 10), rnd(-10, 10), rnd(-20, -60)
+          opacityStart: 1
+          particleCount: 100
+          positionSpread: new THREE.Vector3 .2, .2, .2
+          colorStart: color
+        @voiceGroup.addEmitter emitter
         @emitters.push emitter
         emitter.disable()
-        FW.scene.add @hazeGroup.mesh
+        FW.scene.add @voiceGroup.mesh
 
   update: ->
     for i in [0...FW.freqByteData.length]
       if FW.freqByteData[i]
         fbd = FW.freqByteData[i]
-        if fbd > 50
-          @emitters[i].enable()
+        if fbd > 150
+          @emitters[i]?.enable()
         else 
-          @emitters[i].disable()
-    @hazeGroup.tick()
+          @emitters[i]?.disable()
+    @voiceGroup.tick()
 
 

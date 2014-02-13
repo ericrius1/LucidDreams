@@ -2,49 +2,52 @@ var Haze;
 
 FW.Haze = Haze = (function() {
   function Haze() {
-    this.hazeGroup = new SPE.Group({
-      texture: THREE.ImageUtils.loadTexture('assets/bullet.png'),
+    this.voiceGroup = new SPE.Group({
+      texture: THREE.ImageUtils.loadTexture('assets/smokeparticle.png'),
       maxAge: 1
     });
     this.emitters = [];
-    this.createGrid();
+    this.createVoiceCloud();
   }
 
-  Haze.prototype.createGrid = function() {
-    var emitter, x, y, _i, _results;
+  Haze.prototype.createVoiceCloud = function() {
+    var color, emitter, x, _i, _results;
     _results = [];
-    for (x = _i = -16; _i <= 16; x = ++_i) {
-      _results.push((function() {
-        var _j, _results1;
-        _results1 = [];
-        for (y = _j = -16; _j <= 16; y = ++_j) {
-          emitter = new SPE.Emitter({
-            position: new THREE.Vector3(x, y, -50)
-          });
-          this.hazeGroup.addEmitter(emitter);
-          this.emitters.push(emitter);
-          emitter.disable();
-          _results1.push(FW.scene.add(this.hazeGroup.mesh));
-        }
-        return _results1;
-      }).call(this));
+    for (x = _i = 0; _i < 1024; x = ++_i) {
+      color = new THREE.Color();
+      color.setRGB(rnd(0.8, 1), rnd(0, 0.2), rnd(0.8, 1.0));
+      emitter = new SPE.Emitter({
+        position: new THREE.Vector3(rnd(-10, 10), rnd(-10, 10), rnd(-20, -60)),
+        opacityStart: 1,
+        particleCount: 100,
+        positionSpread: new THREE.Vector3(.2, .2, .2),
+        colorStart: color
+      });
+      this.voiceGroup.addEmitter(emitter);
+      this.emitters.push(emitter);
+      emitter.disable();
+      _results.push(FW.scene.add(this.voiceGroup.mesh));
     }
     return _results;
   };
 
   Haze.prototype.update = function() {
-    var fbd, i, _i, _ref;
+    var fbd, i, _i, _ref, _ref1, _ref2;
     for (i = _i = 0, _ref = FW.freqByteData.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
       if (FW.freqByteData[i]) {
         fbd = FW.freqByteData[i];
-        if (fbd > 50) {
-          this.emitters[i].enable();
+        if (fbd > 150) {
+          if ((_ref1 = this.emitters[i]) != null) {
+            _ref1.enable();
+          }
         } else {
-          this.emitters[i].disable();
+          if ((_ref2 = this.emitters[i]) != null) {
+            _ref2.disable();
+          }
         }
       }
     }
-    return this.hazeGroup.tick();
+    return this.voiceGroup.tick();
   };
 
   return Haze;

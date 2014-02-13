@@ -12,12 +12,10 @@ FW.World = class World
     
     #CONTROLS
     @controls = new THREE.PathControls(FW.camera)
-    @controls.waypoints = [ [ 0, 0, 0] ];
-    @controls.duration = 1000
+    @controls.waypoints = [ [ 0, 0, 0], [0, 0, -60] ];
+    @controls.duration = 280
     @controls.useConstantSpeed = true
-    @controls.createDebugPath = true
-    @controls.createDebugDummy = true
-    @controls.lookSpeed = .00001
+    @controls.lookSpeed = .0001
     @controls.lookVertical = true
     @controls.lookHorizontal = true
 
@@ -27,6 +25,7 @@ FW.World = class World
     FW.scene = new THREE.Scene()
     FW.scene.add @controls.animationParent
     @initSceneObjects()
+
 
 
 
@@ -110,7 +109,7 @@ FW.World = class World
     requestAnimationFrame @animate
   render : ->
     delta = FW.clock.getDelta()
-    # THREE.AnimationHandler.update(delta)
+    THREE.AnimationHandler.update(delta)
     @controls.update(delta)
     FW.Renderer.render( FW.scene, FW.camera );
 

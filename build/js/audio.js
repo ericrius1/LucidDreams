@@ -8,7 +8,7 @@ FW.Audio = Audio = (function() {
     this.masterAnalyser.frequencyBinCount = 1024;
     this.masterGain.connect(this.masterAnalyser);
     this.masterAnalyser.connect(this.musicContext.destination);
-    this.loadFile('assets/LucidDreams.mp3');
+    this.loadFile('assets/GreatestSpeech2.mp3');
   }
 
   Audio.prototype.loadFile = function(filePath) {

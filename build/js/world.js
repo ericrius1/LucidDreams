@@ -12,12 +12,10 @@ FW.World = World = (function() {
     FW.audio.masterGain.value = 1;
     FW.camera = new THREE.PerspectiveCamera(45.0, this.SCREEN_WIDTH / this.SCREEN_HEIGHT, 1, this.camFar);
     this.controls = new THREE.PathControls(FW.camera);
-    this.controls.waypoints = [[0, 0, 0]];
-    this.controls.duration = 1000;
+    this.controls.waypoints = [[0, 0, 0], [0, 0, -60]];
+    this.controls.duration = 280;
     this.controls.useConstantSpeed = true;
-    this.controls.createDebugPath = true;
-    this.controls.createDebugDummy = true;
-    this.controls.lookSpeed = .00001;
+    this.controls.lookSpeed = .0001;
     this.controls.lookVertical = true;
     this.controls.lookHorizontal = true;
     this.controls.init();
@@ -99,6 +97,7 @@ FW.World = World = (function() {
   World.prototype.render = function() {
     var delta;
     delta = FW.clock.getDelta();
+    THREE.AnimationHandler.update(delta);
     this.controls.update(delta);
     return FW.Renderer.render(FW.scene, FW.camera);
   };

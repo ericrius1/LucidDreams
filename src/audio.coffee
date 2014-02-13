@@ -11,7 +11,7 @@ FW.Audio = class Audio
 
     @masterGain.connect @masterAnalyser
     @masterAnalyser.connect @musicContext.destination
-    @loadFile('assets/LucidDreams.mp3')
+    @loadFile('assets/GreatestSpeech2.mp3')
 
   loadFile: (filePath)->
     request = new XMLHttpRequest();
