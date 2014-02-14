@@ -2,6 +2,7 @@ var Haze;
 
 FW.Haze = Haze = (function() {
   function Haze() {
+    this.numEmitters = 500;
     this.voiceGroup = new SPE.Group({
       texture: THREE.ImageUtils.loadTexture('assets/smokeparticle.png'),
       maxAge: 1
@@ -11,15 +12,15 @@ FW.Haze = Haze = (function() {
   }
 
   Haze.prototype.createVoiceCloud = function() {
-    var color, emitter, x, _i, _results;
+    var color, emitter, x, _i, _ref, _results;
     _results = [];
-    for (x = _i = 0; _i < 1024; x = ++_i) {
+    for (x = _i = 0, _ref = this.numEmitters; 0 <= _ref ? _i < _ref : _i > _ref; x = 0 <= _ref ? ++_i : --_i) {
       color = new THREE.Color();
       color.setRGB(rnd(0.8, 1), rnd(0, 0.2), rnd(0.8, 1.0));
       emitter = new SPE.Emitter({
         position: new THREE.Vector3(rnd(-10, 10), rnd(-10, 10), rnd(-20, -60)),
         opacityStart: 1,
-        particleCount: 100,
+        particleCount: 20,
         positionSpread: new THREE.Vector3(.2, .2, .2),
         colorStart: color
       });
@@ -32,18 +33,15 @@ FW.Haze = Haze = (function() {
   };
 
   Haze.prototype.update = function() {
-    var fbd, i, _i, _ref, _ref1, _ref2;
-    for (i = _i = 0, _ref = FW.freqByteData.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+    var emitterIndex, fbd, i, _i, _ref, _ref1;
+    for (i = _i = _ref = FW.freqMap.voiceStart, _ref1 = FW.freqMap.voiceEnd; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = _ref <= _ref1 ? ++_i : --_i) {
       if (FW.freqByteData[i]) {
         fbd = FW.freqByteData[i];
-        if (fbd > 150) {
-          if ((_ref1 = this.emitters[i]) != null) {
-            _ref1.enable();
-          }
+        emitterIndex = Math.floor(map(i, FW.freqMap.voiceStart, FW.freqMap.voiceEnd, 0, this.numEmitters - 1));
+        if (fbd > 100) {
+          this.emitters[emitterIndex].enable();
         } else {
-          if ((_ref2 = this.emitters[i]) != null) {
-            _ref2.disable();
-          }
+          this.emitters[emitterIndex].disable();
         }
       }
     }

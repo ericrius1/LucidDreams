@@ -43,4 +43,8 @@ FW.Audio = class Audio
       @source.noteOn(0)
     FW.director.startShow()
 
+  update: ->
+    FW.freqByteData = new Uint8Array(FW.audio.masterAnalyser.frequencyBinCount)
+    FW.audio.masterAnalyser.getByteFrequencyData(FW.freqByteData)
+
 

@@ -58,12 +58,8 @@ FW.World = World = (function() {
       mesh.position.set(rnd(-10, 10), rnd(-10, 10), -50);
       mesh.rotation.z = (i / 20) * Math.PI * 2;
     }
-    return this.haze = new FW.Haze();
-  };
-
-  World.prototype.updateAudio = function() {
-    FW.freqByteData = new Uint8Array(FW.audio.masterAnalyser.frequencyBinCount);
-    return FW.audio.masterAnalyser.getByteFrequencyData(FW.freqByteData);
+    this.haze = new FW.Haze();
+    return this.spectrum = new FW.Spectrum();
   };
 
   World.prototype.updatePulseGeo = function() {
@@ -88,8 +84,9 @@ FW.World = World = (function() {
   };
 
   World.prototype.animate = function() {
-    this.updateAudio();
+    FW.audio.update();
     this.haze.update();
+    this.spectrum.update();
     this.render();
     return requestAnimationFrame(this.animate);
   };

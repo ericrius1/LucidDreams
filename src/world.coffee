@@ -81,9 +81,10 @@ FW.World = class World
     #HAZE
     @haze = new FW.Haze()
 
-  updateAudio: ->
-    FW.freqByteData = new Uint8Array(FW.audio.masterAnalyser.frequencyBinCount)
-    FW.audio.masterAnalyser.getByteFrequencyData(FW.freqByteData)
+    #Spectrum
+    @spectrum = new FW.Spectrum()
+
+   
   
   updatePulseGeo: ->
     for i in [0...@pulseGeo.vertices.length]
@@ -102,9 +103,9 @@ FW.World = class World
     FW.camera.updateProjectionMatrix()
 
   animate : =>
-    @updateAudio()
-    # @updatePulseGeo()
+    FW.audio.update()
     @haze.update()
+    @spectrum.update()
     @render()
     requestAnimationFrame @animate
   render : ->

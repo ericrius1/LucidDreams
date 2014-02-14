@@ -49,6 +49,11 @@ FW.Audio = Audio = (function() {
     return FW.director.startShow();
   };
 
+  Audio.prototype.update = function() {
+    FW.freqByteData = new Uint8Array(FW.audio.masterAnalyser.frequencyBinCount);
+    return FW.audio.masterAnalyser.getByteFrequencyData(FW.freqByteData);
+  };
+
   return Audio;
 
 })();
