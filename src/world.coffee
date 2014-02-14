@@ -12,7 +12,7 @@ FW.World = class World
     
     #CONTROLS
     @controls = new THREE.PathControls(FW.camera)
-    @controls.waypoints = [ [ 0, 0, 0], [0, 0, -60] ];
+    @controls.waypoints = [ [ 0, 0, 0], [0, 0, -30] ];
     @controls.duration = 280
     @controls.useConstantSpeed = true
     @controls.lookSpeed = .0001
@@ -103,11 +103,9 @@ FW.World = class World
     FW.camera.updateProjectionMatrix()
 
   animate : =>
-    FW.audio.update()
     @haze.update()
     @spectrum.update()
     @render()
-    requestAnimationFrame @animate
   render : ->
     delta = FW.clock.getDelta()
     THREE.AnimationHandler.update(delta)

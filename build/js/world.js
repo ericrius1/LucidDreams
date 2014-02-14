@@ -12,7 +12,7 @@ FW.World = World = (function() {
     FW.audio.masterGain.value = 1;
     FW.camera = new THREE.PerspectiveCamera(45.0, this.SCREEN_WIDTH / this.SCREEN_HEIGHT, 1, this.camFar);
     this.controls = new THREE.PathControls(FW.camera);
-    this.controls.waypoints = [[0, 0, 0], [0, 0, -60]];
+    this.controls.waypoints = [[0, 0, 0], [0, 0, -30]];
     this.controls.duration = 280;
     this.controls.useConstantSpeed = true;
     this.controls.lookSpeed = .0001;
@@ -84,11 +84,9 @@ FW.World = World = (function() {
   };
 
   World.prototype.animate = function() {
-    FW.audio.update();
     this.haze.update();
     this.spectrum.update();
-    this.render();
-    return requestAnimationFrame(this.animate);
+    return this.render();
   };
 
   World.prototype.render = function() {
