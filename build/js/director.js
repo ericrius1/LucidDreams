@@ -7,8 +7,8 @@ FW.Director = Director = (function() {
 
   Director.prototype.startShow = function() {
     FW.freqMap = {
-      voiceStart: 100,
-      voiceEnd: 300
+      voiceStart: 200,
+      voiceEnd: 1000
     };
     FW.world = new FW.World();
     return FW.world.animate();

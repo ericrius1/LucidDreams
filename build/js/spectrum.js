@@ -16,9 +16,6 @@ FW.Spectrum = Spectrum = (function() {
         specBox = new THREE.Mesh(specGeo, specMat);
         specBox.material.color.setRGB(Math.random(), Math.random(), Math.random());
         specBox.position.set(xPos, 0, -50);
-        if (i > 100) {
-          FW.scene.add(specBox);
-        }
         _results.push(this.specBoxes.push(specBox));
       }
       return _results;
