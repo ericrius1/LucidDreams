@@ -1,6 +1,6 @@
 FW.Director = class Director
   constructor: ->
-    @shiftVoiceTime = 20000
+    @shiftVoiceTime = 10000
 
   startShow: ->
     @startTime = Date.now()
@@ -17,5 +17,5 @@ FW.Director = class Director
     FW.audio.update()
     FW.world.animate()
 
-    if Date.now() > @startTime + @shiftVoiceTime
-      FW.freqMap.voiceStart = 450
+    FW.freqMap.voiceStart+=.01
+

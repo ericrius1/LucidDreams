@@ -21,6 +21,14 @@ FW.Spectrum = class Spectrum
 
   update: ->
     for i in [0...@specBoxes.length]
-      @specBoxes[i].scale.y = Math.max(1, FW.freqByteData[i])
+      #Toggle visibility on and off dynamically
+      if i > FW.freqMap.voiceStart
+        # console.log FW.freqMap.voiceStart
+        @specBoxes[i].visible = true
+        @specBoxes[i].scale.y = Math.max(1, FW.freqByteData[i])
+      else
+        @specBoxes[i].visible = false
+
+
 
 

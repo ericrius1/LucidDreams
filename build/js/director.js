@@ -4,7 +4,7 @@ var Director,
 FW.Director = Director = (function() {
   function Director() {
     this.run = __bind(this.run, this);
-    this.shiftVoiceTime = 20000;
+    this.shiftVoiceTime = 10000;
   }
 
   Director.prototype.startShow = function() {
@@ -21,9 +21,7 @@ FW.Director = Director = (function() {
     requestAnimationFrame(this.run);
     FW.audio.update();
     FW.world.animate();
-    if (Date.now() > this.startTime + this.shiftVoiceTime) {
-      return FW.freqMap.voiceStart = 450;
-    }
+    return FW.freqMap.voiceStart += .01;
   };
 
   return Director;

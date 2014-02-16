@@ -26,7 +26,12 @@ FW.Spectrum = Spectrum = (function() {
     var i, _i, _ref, _results;
     _results = [];
     for (i = _i = 0, _ref = this.specBoxes.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      _results.push(this.specBoxes[i].scale.y = Math.max(1, FW.freqByteData[i]));
+      if (i > FW.freqMap.voiceStart) {
+        this.specBoxes[i].visible = true;
+        _results.push(this.specBoxes[i].scale.y = Math.max(1, FW.freqByteData[i]));
+      } else {
+        _results.push(this.specBoxes[i].visible = false);
+      }
     }
     return _results;
   };

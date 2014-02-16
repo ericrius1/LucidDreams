@@ -2,7 +2,8 @@ FW.Haze = class Haze
   constructor: ->
     #We want to have n arbitrary number of emitters which are spread out equally among specified 
     #frequency ranges
-    @numEmitters = 1000
+    @numEmitters = 300
+    @activationThreshold = 40
     @voiceGroup = new SPE.Group
       texture: THREE.ImageUtils.loadTexture('assets/smokeparticle.png')
       maxAge: 0.5
@@ -14,10 +15,8 @@ FW.Haze = class Haze
         color = new THREE.Color()
         color.setRGB rnd(0.6, 1), rnd(0, 0.4), rnd(0.6, 1.0)
         emitter = new SPE.Emitter
-          position: new THREE.Vector3 rnd(-10, 10), rnd(-10, 10), rnd(-10, -60)
+          position: new THREE.Vector3 rnd(-3, 3), rnd(-4, 4), rnd(-20, -50)
           opacityStart: 1
-          particleCount: 50
-          positionSpread: new THREE.Vector3 .1, .1, .1
           colorStart: color
           opacityEnd: 0.0
         @voiceGroup.addEmitter emitter
@@ -27,15 +26,26 @@ FW.Haze = class Haze
 
   update: ->
     #We want to go through relevent part of freqByteData and map those values to our voice emitters
-    for i in [FW.freqMap.voiceStart..FW.freqMap.voiceEnd]
-      if FW.freqByteData[i]
-        fbd = FW.freqByteData[i]
-        emitterIndex = Math.floor(map(i, FW.freqMap.voiceStart, FW.freqMap.voiceEnd, 0, @numEmitters-1))
-        if fbd > 5
-          @emitters[emitterIndex].enable()
-        else
-          @emitters[emitterIndex].disable()
+    start = Math.round(FW.freqMap.voiceStart)
+    end = Math.round(FW.freqMap.voiceEnd)
 
+    #Go through and disable all emitters
+    for emitter in @emitters
+      emitter.disable()
+    #We want to activate all our voice emitters if we detect him speaking- so lets
+    #go through the voice range and add up the freq byte data of each bucket into a total
+    #If we pass a certain threshold, 
+    totalFbd = 0
+    for i in [start...end]
+      if FW.freqByteData[i]
+        totalFbd += FW.freqByteData[i]
+      if totalFbd > @activationThreshold
+        #if we have passed threshold, activate a random set of emitters
+        for emitter in @emitters
+          if Math.random() < 0.05
+            emitter.enable()
+        break
+      
     @voiceGroup.tick()
 
 
