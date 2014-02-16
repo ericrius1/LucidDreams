@@ -6,7 +6,7 @@ FW.Director = class Director
     @startTime = Date.now()
     FW.freqMap =
       voiceStart: 400
-      voiceEnd: 800
+      voiceEnd: 600
 
     FW.world = new FW.World()
     @run()

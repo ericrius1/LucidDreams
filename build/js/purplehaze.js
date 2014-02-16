@@ -2,14 +2,14 @@ var Haze;
 
 FW.Haze = Haze = (function() {
   function Haze() {
-    this.numEmitters = 300;
-    this.activationThreshold = 40;
+    this.numEmitters = 1000;
     this.voiceGroup = new SPE.Group({
       texture: THREE.ImageUtils.loadTexture('assets/smokeparticle.png'),
-      maxAge: 0.5
+      maxAge: 0.05
     });
     this.emitters = [];
     this.createVoiceCloud();
+    this.metaTotal = 0;
   }
 
   Haze.prototype.createVoiceCloud = function() {
@@ -19,10 +19,13 @@ FW.Haze = Haze = (function() {
       color = new THREE.Color();
       color.setRGB(rnd(0.6, 1), rnd(0, 0.4), rnd(0.6, 1.0));
       emitter = new SPE.Emitter({
-        position: new THREE.Vector3(rnd(-3, 3), rnd(-4, 4), rnd(-20, -50)),
+        position: new THREE.Vector3(rnd(-3, 3), rnd(-4, 4), rnd(-30, -50)),
         opacityStart: 1,
         colorStart: color,
-        opacityEnd: 0.0
+        opacityEnd: 0.0,
+        opacityStart: 0,
+        opacityMiddle: 1,
+        particleCount: 50
       });
       this.voiceGroup.addEmitter(emitter);
       this.emitters.push(emitter);
@@ -33,7 +36,7 @@ FW.Haze = Haze = (function() {
   };
 
   Haze.prototype.update = function() {
-    var emitter, end, i, start, totalFbd, _i, _j, _k, _len, _len1, _ref, _ref1;
+    var activationFraction, emitter, end, i, start, totalFbd, _i, _j, _k, _len, _len1, _ref, _ref1;
     start = Math.round(FW.freqMap.voiceStart);
     end = Math.round(FW.freqMap.voiceEnd);
     _ref = this.emitters;
@@ -46,15 +49,16 @@ FW.Haze = Haze = (function() {
       if (FW.freqByteData[i]) {
         totalFbd += FW.freqByteData[i];
       }
-      if (totalFbd > this.activationThreshold) {
-        _ref1 = this.emitters;
-        for (_k = 0, _len1 = _ref1.length; _k < _len1; _k++) {
-          emitter = _ref1[_k];
-          if (Math.random() < 0.05) {
-            emitter.enable();
-          }
-        }
-        break;
+    }
+    if (totalFbd > this.metaTotal) {
+      this.metaTotal = totalFbd;
+    }
+    activationFraction = map(totalFbd, 0, 5000, 0, 1);
+    _ref1 = this.emitters;
+    for (_k = 0, _len1 = _ref1.length; _k < _len1; _k++) {
+      emitter = _ref1[_k];
+      if (Math.random() < activationFraction) {
+        emitter.enable();
       }
     }
     return this.voiceGroup.tick();
