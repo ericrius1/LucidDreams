@@ -14,8 +14,8 @@ FW.Spectrum = class Spectrum
       specBox = new THREE.Mesh specGeo, specMat
       specBox.material.color.setRGB Math.random(), Math.random(), Math.random()
       specBox.position.set(xPos, 0, -50)
-      # if i > FW.freqMap.voiceStart and i < FW.freqMap.voiceEnd
-      #   FW.scene.add specBox
+      if i > FW.freqMap.voiceStart and i < FW.freqMap.voiceEnd
+        FW.scene.add specBox
       @specBoxes.push specBox
 
 

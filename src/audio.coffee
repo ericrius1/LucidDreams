@@ -39,8 +39,6 @@ FW.Audio = class Audio
 
 
   play: ->
-    if soundOn
-      @source.noteOn(0)
     FW.director.startShow()
 
   update: ->

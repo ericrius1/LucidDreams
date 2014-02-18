@@ -43,9 +43,6 @@ FW.Audio = Audio = (function() {
   };
 
   Audio.prototype.play = function() {
-    if (soundOn) {
-      this.source.noteOn(0);
-    }
     return FW.director.startShow();
   };
 

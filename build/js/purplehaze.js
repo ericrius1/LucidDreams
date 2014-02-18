@@ -5,7 +5,7 @@ FW.Haze = Haze = (function() {
     this.numEmitters = 1000;
     this.voiceGroup = new SPE.Group({
       texture: THREE.ImageUtils.loadTexture('assets/smokeparticle.png'),
-      maxAge: 0.05
+      maxAge: 0.1
     });
     this.emitters = [];
     this.createVoiceCloud();
@@ -49,9 +49,6 @@ FW.Haze = Haze = (function() {
       if (FW.freqByteData[i]) {
         totalFbd += FW.freqByteData[i];
       }
-    }
-    if (totalFbd > this.metaTotal) {
-      this.metaTotal = totalFbd;
     }
     activationFraction = map(totalFbd, 0, 5000, 0, 1);
     _ref1 = this.emitters;

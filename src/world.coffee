@@ -9,28 +9,41 @@ FW.World = class World
 
     # CAMERA
     FW.camera = new THREE.PerspectiveCamera(45.0, @SCREEN_WIDTH / @SCREEN_HEIGHT, 1, @camFar)
+    FW.camera.position.z = 20
     
     #CONTROLS
-    @controls = new THREE.PathControls(FW.camera)
-    @controls.waypoints = [ [ 0, 0, 0], [0, 0, -30] ];
-    @controls.duration = 280
-    @controls.useConstantSpeed = true
-    @controls.lookSpeed = .0001
-    @controls.lookVertical = true
-    @controls.lookHorizontal = true
+    # @controls = new THREE.PathControls(FW.camera)
+    # @controls.waypoints = [ [ 0, 0, 0], [0, 0, -30] ];
+    # @controls.duration = 280
+    # @controls.useConstantSpeed = true
+    # @controls.lookSpeed = .0001
+    # @controls.lookVertical = true
+    # @controls.lookHorizontal = true
+    # @controls.init()
 
-    @controls.init()
+    @controls = new THREE.TrackballControls(FW.camera)
+
+    @controls.rotateSpeed = 1.0;
+    @controls.zoomSpeed = 1.2;
+    @controls.panSpeed = 0.8;
+
+    @controls.noZoom = false;
+    @controls.noPan = false;
+
+    @controls.staticMoving = true;
+    @controls.dynamicDampingFactor = 0.3;
+
 
     # SCENE 
     FW.scene = new THREE.Scene()
-    FW.scene.add @controls.animationParent
+    # FW.scene.add @controls.animationParent
     @initSceneObjects()
 
 
 
 
     # RENDERER
-    FW.Renderer = new THREE.WebGLRenderer()
+    FW.Renderer = new THREE.WebGLRenderer({antialias: true})
     FW.Renderer.setSize @SCREEN_WIDTH, @SCREEN_HEIGHT
     document.body.appendChild FW.Renderer.domElement
 
@@ -39,8 +52,8 @@ FW.World = class World
       @onWindowResize()
     ), false
 
+    # @controls.animation.play(true, 0)
     #start animation
-    @controls.animation.play(true, 0)
 
   initSceneObjects: ->
     light = new THREE.DirectionalLight( 0xaa00aa , 1 )
@@ -53,47 +66,40 @@ FW.World = class World
 
     FW.scene.add( light )
 
-    material = new THREE.MeshPhongMaterial
-      color:        0xc0ffee
-      emissive:     0x004477
-      specular:     0x440077
-      diffuse:      0x440077
-      shininess:     100000
-      ambient:      0x110000
-      shading:      THREE.FlatShading
-      side:         THREE.DoubleSide
-      opacity:      1
-      transparent:  true
-        
 
-    #We create a geometry, and then we copy, 
-    #So that we have an unaltered version to compare
-    @pulseGeo  = new THREE.IcosahedronGeometry(1 , 2 );
-    @pulseData = @pulseGeo.clone();
+    #FLOOR
+    attributes = 
+      displacement:
+        type: 'f' #float
+        value: []
+    # floorGeo = new THREE.PlaneGeometry 100, 100, 10, 10
+    floorGeo = new THREE.IcosahedronGeometry( 20, 4 )
+    floorMaterial = new THREE.ShaderMaterial
+      attributes: attributes
+      vertexShader: document.getElementById('vertexShader').textContent
+      fragmentShader: document.getElementById('fragmentShader').textContent
+    floorMesh = new THREE.Mesh floorGeo, floorMaterial
+    floorMesh.position.y = -10
+    floorMesh.rotation.x = -Math.PI/2
+
+    #Populate array of attributes
+    vertices = floorMesh.geometry.vertices
+    values = attributes.displacement.value
+    for v in [0...vertices.length]
+      values.push Math.random() * 5
+    FW.scene.add floorMesh
 
 
-    for i in [0..1]
-      mesh = new THREE.Mesh( @pulseGeo , material )
-      mesh.position.set(rnd(-10, 10), rnd(-10, 10), -50)
-      mesh.rotation.z = (i / 20) * Math.PI * 2
-      # FW.scene.add( mesh )
+
+
 
     #HAZE
-    @haze = new FW.Haze()
+    # @haze = new FW.Haze()
 
     #Spectrum
-    @spectrum = new FW.Spectrum()
+    # @spectrum = new FW.Spectrum()
 
    
-  
-  updatePulseGeo: ->
-    for i in [0...@pulseGeo.vertices.length]
-      if FW.freqByteData[i]
-        fbd = @freqByteData[i]
-        @pulseGeo.vertices[i].x = @pulseData.vertices[i].x * ( .5 + fbd/100 )
-        @pulseGeo.vertices[i].y = @pulseData.vertices[i].y * ( .5 + fbd/100 )
-        @pulseGeo.vertices[i].z = @pulseData.vertices[i].z * ( .5 + fbd/100 )
-    @pulseGeo.verticesNeedUpdate = true
 
   onWindowResize : (event) ->
     @SCREEN_WIDTH = window.innerWidth
@@ -103,12 +109,12 @@ FW.World = class World
     FW.camera.updateProjectionMatrix()
 
   animate : =>
-    @haze.update()
-    @spectrum.update()
+    # @haze.update()
+    # @spectrum.update()
     @render()
   render : ->
     delta = FW.clock.getDelta()
-    THREE.AnimationHandler.update(delta)
-    @controls.update(delta)
+    # THREE.AnimationHandler.update(delta)
+    @controls.update()
     FW.Renderer.render( FW.scene, FW.camera );
 

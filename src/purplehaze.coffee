@@ -5,7 +5,7 @@ FW.Haze = class Haze
     @numEmitters = 1000
     @voiceGroup = new SPE.Group
       texture: THREE.ImageUtils.loadTexture('assets/smokeparticle.png')
-      maxAge: 0.05
+      maxAge: 0.1
     @emitters = []
     @createVoiceCloud()
     @metaTotal = 0
@@ -42,10 +42,6 @@ FW.Haze = class Haze
     for i in [start...end]
       if FW.freqByteData[i]
         totalFbd += FW.freqByteData[i]
-
-    #we want meta total so we can use that for our mapping
-    if totalFbd > @metaTotal
-      @metaTotal = totalFbd
 
     #now go through and enable proportinal amount of voice emitters
     activationFraction = map(totalFbd, 0, 5000, 0, 1)

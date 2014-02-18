@@ -15,7 +15,8 @@
 
     <script src="lib/Detector.js"></script>
 
-    <script src="lib/PathControls.js"></script>
+    // <script src="lib/PathControls.js"></script>
+    <script src="lib/TrackballControls.js"></script>
 
 
     <script src="lib/utils.js"></script>
@@ -27,7 +28,24 @@
     <script src="build/js//audio.js"></script>
     <script src ='build/js/world.js'></script>
 
-    
+    <script type='x-shader/x-vertex' id="vertexShader">
+      attribute float displacement;
+      varying vec3 vNormal;
+      varying vec2 vUv;
+      void main() {
+        gl_Position = projectionMatrix *
+                      modelViewMatrix *
+                      vec4(position, 1.0);    
+        }
+    </script>
+
+    <script type='x-shader/x-fragment' id="fragmentShader">
+      varying vec2 vUv;
+      varying vec3 vNormal;
+      void main() {
+        gl_FragColor = vec4(vec3(vUv, 0.), 1.);
+      }
+    </script>
 
     <div class= 'infoButton'>
       <span class='infoText'>
