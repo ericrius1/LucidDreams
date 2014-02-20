@@ -46,7 +46,7 @@ FW.World = World = (function() {
         value: []
       }
     };
-    floorGeo = new THREE.IcosahedronGeometry(20, 4);
+    floorGeo = new THREE.SphereGeometry(20, 20, 20, 20);
     floorMaterial = new THREE.ShaderMaterial({
       attributes: attributes,
       vertexShader: document.getElementById('vertexShader').textContent,

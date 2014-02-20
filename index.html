@@ -15,7 +15,6 @@
 
     <script src="lib/Detector.js"></script>
 
-    // <script src="lib/PathControls.js"></script>
     <script src="lib/TrackballControls.js"></script>
 
 
@@ -31,19 +30,39 @@
     <script type='x-shader/x-vertex' id="vertexShader">
       attribute float displacement;
       varying vec3 vNormal;
-      varying vec2 vUv;
       void main() {
+        //set the vNormal value with the attribute value passed in by threejs
+        vNormal = normal;
+
+        vec3 newPosition = position + normal * vec3(displacement);
+
         gl_Position = projectionMatrix *
                       modelViewMatrix *
-                      vec4(position, 1.0);    
+                      vec4(newPosition, 1.0);    
         }
     </script>
 
     <script type='x-shader/x-fragment' id="fragmentShader">
-      varying vec2 vUv;
+      //same name and type as VS
       varying vec3 vNormal;
       void main() {
-        gl_FragColor = vec4(vec3(vUv, 0.), 1.);
+        // calc the dot product and clamp
+        // 0 -> 1 rather than -1 -> 1
+        vec3 light = vec3(0.5, 0.2, 1.0);
+
+        // ensure it's normalized
+        light = normalize(light);
+
+        // calculate the dot product of
+        // the light to the vertex normal
+        float dProd = max(0.0,
+                          dot(vNormal, light));
+
+        // feed into our frag colour
+        gl_FragColor = vec4(dProd, // R
+                            dProd, // G
+                            dProd, // B
+                            1.0);  // A
       }
     </script>
 
